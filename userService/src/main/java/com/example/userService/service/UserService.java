@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
  * Implémente UserDetailsService pour Spring Security
  * (permet de charger un utilisateur par son email)
  */
+
 @Service
 @RequiredArgsConstructor  // Lombok génère le constructeur avec tous les champs final
 public class UserService implements UserDetailsService {
