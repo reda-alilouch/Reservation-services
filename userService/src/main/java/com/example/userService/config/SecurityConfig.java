@@ -21,56 +21,39 @@ public class SecurityConfig {
     private final JwtAuthFilter         jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
-    /**
-     * Bean SecurityFilterChain :
-     * C'est ici qu'on configure toutes les règles de sécurité HTTP.
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                // ── 1. Désactiver CSRF ────────────────────────────────────────
-                // CSRF n'est pas nécessaire avec JWT (pas de cookies de session)
                 .csrf(AbstractHttpConfigurer::disable)
 
-                // ── 2. Règles d'autorisation par endpoint ─────────────────────
                 .authorizeHttpRequests(auth -> auth
 
-                        // Endpoints PUBLICS — accessibles sans token
                         .requestMatchers(
-                                "/auth/register",       // inscription
-                                "/auth/login",          // connexion
-                                "/auth/refresh",        // rafraîchir le token
-                                "/swagger-ui/**",       // documentation Swagger
+                                "/auth/register",
+                                "/auth/login",
+                                "/auth/refresh",
+                                "/auth/logout",
+                                "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/api-docs/**",
-                                "/actuator/health"      // health check
+                                "/actuator/health"
                         ).permitAll()
 
-                        // Endpoints réservés à l'ADMIN uniquement
                         .requestMatchers(
-                                "/users",               // liste tous les utilisateurs
-                                "/users/*/status"       // activer/désactiver un compte
+                                "/users",
+                                "/users/*/status"
                         ).hasAuthority("ADMIN")
 
-                        // Tous les autres endpoints nécessitent un token valide
                         .anyRequest().authenticated()
                 )
 
-                // ── 3. Politique de session STATELESS ─────────────────────────
-                // Pas de session HTTP côté serveur.
-                // Chaque requête doit porter son token JWT.
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                // ── 4. Provider d'authentification ────────────────────────────
-                // Utilise DaoAuthenticationProvider (UserDetailsService + BCrypt)
                 .authenticationProvider(authenticationProvider)
 
-                // ── 5. Ajouter le filtre JWT ──────────────────────────────────
-                // JwtAuthFilter s'exécute AVANT le filtre d'authentification standard
-                // Ordre : JwtAuthFilter → UsernamePasswordAuthenticationFilter → Controller
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

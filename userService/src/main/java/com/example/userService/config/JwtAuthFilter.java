@@ -3,6 +3,7 @@ package com.example.userService.config;
 import com.example.userService.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,10 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 /**
  * Filtre JWT — intercepte CHAQUE requête HTTP avant qu'elle atteigne le Controller.
  *
@@ -33,7 +36,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
-    private final JwtService        jwtService;
+    private final JwtService         jwtService;
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -43,54 +46,79 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             @NonNull FilterChain         filterChain
     ) throws ServletException, IOException {
 
-        // ── Étape 1 : Lire le header Authorization ────────────────────────
-        // Exemple de header : "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9..."
-        final String authHeader = request.getHeader("Authorization");
+        // ── Étape 1 : Lire le cookie "access_token" ──────────────────────
+        String jwt = extractTokenFromCookie(request);
 
-        // Si pas de header ou ne commence pas par "Bearer " → passer au filtre suivant
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        // Pas de cookie → passer au filtre suivant (endpoint public ou non authentifié)
+        if (jwt == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // ── Étape 2 : Extraire le token (enlever "Bearer ") ───────────────
-        // "Bearer eyJhbGciOiJIUzI1NiJ9..." → "eyJhbGciOiJIUzI1NiJ9..."
-        final String jwt   = authHeader.substring(7);
+        // ── Étape 2 : Extraire l'email depuis le token JWT ────────────────
+        String email;
+        try {
+            email = jwtService.extractUsername(jwt);
+        } catch (Exception e) {
+            // Token malformé ou signature invalide → continuer sans authentifier
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-        // ── Étape 3 : Extraire l'email depuis le token ────────────────────
-        final String email = jwtService.extractUsername(jwt);
-
-        // ── Étape 4 : Authentifier si email valide et pas encore authentifié
-        // SecurityContextHolder.getContext().getAuthentication() == null
-        // signifie que l'utilisateur n'est pas encore authentifié pour cette requête
+        // ── Étape 3 : Authentifier si pas encore fait ─────────────────────
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            // Charger l'utilisateur depuis la base de données
+            // Charger l'utilisateur depuis la base
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-            // Vérifier que le token est valide (signature + expiration)
+            // Vérifier validité du token (signature + expiration)
             if (jwtService.isTokenValid(jwt, userDetails)) {
 
                 // Créer l'objet d'authentification Spring Security
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
-                                userDetails,        // l'utilisateur authentifié
-                                null,               // credentials (null car JWT, pas de mdp)
-                                userDetails.getAuthorities() // rôles : [ROLE_CLIENT, ROLE_ADMIN...]
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities() // rôles : ADMIN, CLIENT...
                         );
 
-                // Ajouter les détails de la requête HTTP
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
                 );
 
-                // ── Étape 5 : Enregistrer l'authentification ──────────────
-                // Spring Security sait maintenant QUI fait la requête
+                // ── Étape 4 : Enregistrer dans le SecurityContext ──────────
+                // Spring sait maintenant QUI fait cette requête
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
-        // ── Étape 6 : Passer au filtre/controller suivant ─────────────────
+        // ── Étape 5 : Passer au controller ───────────────────────────────
         filterChain.doFilter(request, response);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Helper — extraire le token depuis les cookies
+    // ─────────────────────────────────────────────────────────────────────
+
+    /**
+     * Cherche le cookie "access_token" dans la requête HTTP.
+     *
+     * @param request la requête HTTP entrante
+     * @return la valeur du token JWT, ou null si absent
+     */
+    private String extractTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+
+        // Aucun cookie dans la requête
+        if (cookies == null) {
+            return null;
+        }
+
+        // Chercher le cookie nommé "access_token"
+        Optional<Cookie> tokenCookie = Arrays.stream(cookies)
+                .filter(cookie -> "access_token".equals(cookie.getName()))
+                .findFirst();
+
+        return tokenCookie.map(Cookie::getValue).orElse(null);
     }
 }

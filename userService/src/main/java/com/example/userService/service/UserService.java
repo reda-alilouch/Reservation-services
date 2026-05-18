@@ -12,6 +12,7 @@ import com.example.userService.exception.EmailAlreadyExistsException;
 import com.example.userService.exception.InvalidTokenException;
 import com.example.userService.exception.UserNotFoundException;
 import com.example.userService.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,33 +23,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Service principal du User Service.
- * Contient toute la logique métier :
- * - Inscription et connexion
- * - Gestion des profils
- * - Changement de mot de passe
- * - Administration des comptes
- *
- * Implémente UserDetailsService pour Spring Security
- * (permet de charger un utilisateur par son email)
- */
-
 @Service
-@RequiredArgsConstructor  // Lombok génère le constructeur avec tous les champs final
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
 
-
-    private final UserRepository userRepository;
-    private final JwtService jwtService;
-    private final PasswordEncoder passwordEncoder;
+    private final UserRepository        userRepository;
+    private final JwtService            jwtService;
+    private final PasswordEncoder       passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
     // ── Inscription ───────────────────────────────────────────────────────
@@ -68,7 +52,7 @@ public class UserService implements UserDetailsService {
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword())) // BCrypt
+                .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole() != null ? request.getRole() : Role.CLIENT)
                 .isActive(true)
                 .build();
@@ -77,7 +61,7 @@ public class UserService implements UserDetailsService {
         User savedUser = userRepository.save(user);
 
         // 4. Générer les tokens JWT
-        String accessToken = jwtService.generateToken(savedUser);
+        String accessToken  = jwtService.generateToken(savedUser);
         String refreshToken = jwtService.generateRefreshToken(savedUser);
 
         return buildAuthResponse(savedUser, accessToken, refreshToken);
@@ -100,8 +84,8 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UserNotFoundException("Compte désactivé ou introuvable"));
 
         // 3. Générer les tokens
-        String accessToken = jwtService.generateToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
+        String accessToken  = jwtService.generateToken((UserDetails) user);
+        String refreshToken = jwtService.generateRefreshToken((UserDetails) user);
 
         return buildAuthResponse(user, accessToken, refreshToken);
     }
@@ -189,7 +173,7 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Utilisateur introuvable"));
 
-        user.setIsActive(active);
+        user.setActive(active);
         userRepository.save(user);
     }
 
@@ -202,8 +186,6 @@ public class UserService implements UserDetailsService {
                         "Utilisateur avec l'email " + email + " introuvable"
                 ));
     }
-
-    // ── Helpers privés ────────────────────────────────────────────────────
 
     private AuthResponse buildAuthResponse(User user, String accessToken, String refreshToken) {
         return AuthResponse.builder()
@@ -223,7 +205,7 @@ public class UserService implements UserDetailsService {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .role(user.getRole())
-                .isActive(user.getIsActive())
+                .isActive(user.isActive())
                 .createdAt(user.getCreatedAt())
                 .build();
     }
