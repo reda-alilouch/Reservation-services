@@ -1,0 +1,47 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+
+    environment:
+      POSTGRES_DB: user_service_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: reda2005
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  eureka-server:
+    build: ../eureka-server
+    container_name: eureka-server
+
+    ports:
+      - "8761:8761"
+
+  gateway-service:
+    build: ../gateway-service
+    container_name: gateway-service
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - eureka-server
+
+  auth-service:
+    build: ../auth-service
+    container_name: auth-service
+
+    ports:
+      - "8082:8082"
+
+    depends_on:
+      - postgres
+      - eureka-server
+
+volumes:
+  postgres_data:
