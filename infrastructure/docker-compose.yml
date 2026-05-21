@@ -22,6 +22,17 @@ services:
     ports:
       - "8761:8761"
 
+  config-server:
+  build: ../config-server
+
+  container_name: config-server
+
+  ports:
+    - "8888:8888"
+
+  depends_on:
+    - eureka-server
+
   gateway-service:
     build: ../gateway-service
     container_name: gateway-service
@@ -31,6 +42,7 @@ services:
 
     depends_on:
       - eureka-server
+      - config-server
 
   auth-service:
     build: ../auth-service
@@ -42,6 +54,7 @@ services:
     depends_on:
       - postgres
       - eureka-server
+      - config-server
 
 volumes:
   postgres_data:
