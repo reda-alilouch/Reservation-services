@@ -8,11 +8,12 @@ spring:
   profiles:
     active: native
 
+
   cloud:
     config:
       server:
         native:
-          search-locations: file:///C:/Users/alilo/Reservation/config-repo
+          search-locations: file:/config-repo
 
 eureka:
   client:

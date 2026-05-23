@@ -17,13 +17,13 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${application.security.jwt.secret-key}")
+    @Value("${JWT_SECRET:${jwt.secret-key:}}")
     private String secretKey;
 
-    @Value("${application.security.jwt.expiration}")
+    @Value("${JWT_EXPIRATION:${jwt.expiration:86400000}}")
     private long expiration;
 
-    @Value("${application.security.jwt.refresh-expiration}")
+    @Value("${JWT_REFRESH_EXPIRATION:${jwt.refresh-expiration:604800000}}")
     private long refreshExpiration;
 
     // ─────────────────────────────────────────────
