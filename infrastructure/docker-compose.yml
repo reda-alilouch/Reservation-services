@@ -19,6 +19,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
   eureka-server:
     build: ../eureka-server
@@ -28,10 +29,11 @@ services:
       - "8761:8761"
 
     healthcheck:
-      test: ["CMD-SHELL", "test -f /proc/1/stat || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8761/eureka/apps || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 20s
 
   config-server:
     build: ../config-server
@@ -47,11 +49,15 @@ services:
     volumes:
       - ../config-repo:/config-repo
 
+    restart: unless-stopped
+
     healthcheck:
-      test: ["CMD-SHELL", "test -f /proc/1/stat || exit 1"]
+      test:
+        ["CMD-SHELL", "curl -f http://localhost:8888/actuator/health || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 20s
 
   gateway-service:
     build: ../gateway-service
@@ -66,13 +72,25 @@ services:
       config-server:
         condition: service_healthy
 
+    restart: unless-stopped
+
+    healthcheck:
+      test:
+        ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
     environment:
-      SPRING_CLOUD_CONFIG_URI: http://config-server:8888
+      CONFIG_SERVER_URI: http://config-server:8888
+      EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka
 
   auth-service:
     build: ../auth-service
     container_name: auth-service
-
+    restart: unless-stopped
+    
     ports:
       - "8082:8082"
 
@@ -84,5 +102,13 @@ services:
       config-server:
         condition: service_healthy
 
+    environment:
+      CONFIG_SERVER_URI: http://config-server:8888
+      EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka
+
 volumes:
   postgres_data:
+
+networks:
+  default:
+    name: microservices-network

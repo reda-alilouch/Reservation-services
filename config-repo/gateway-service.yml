@@ -11,7 +11,6 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
-
       routes:
         - id: auth-service
           uri: lb://AUTH-SERVICE
@@ -21,14 +20,13 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://eureka-server:8761/eureka
+      defaultZone: ${EUREKA_DEFAULT_ZONE:http://eureka-server:8761/eureka}
     register-with-eureka: true
     fetch-registry: true
     healthcheck:
       enabled: true
 
   instance:
-    prefer-ip-address: false
-    hostname: gateway-service
+    prefer-ip-address: true        
     lease-renewal-interval-in-seconds: 10
     lease-expiration-duration-in-seconds: 30
