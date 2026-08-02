@@ -26,9 +26,7 @@ public class SecurityConfig {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
-
                 .authorizeHttpRequests(auth -> auth
-
                         .requestMatchers(
                                 "/auth/register",
                                 "/auth/login",
@@ -39,21 +37,16 @@ public class SecurityConfig {
                                 "/api-docs/**",
                                 "/actuator/health"
                         ).permitAll()
-
                         .requestMatchers(
                                 "/users",
                                 "/users/*/status"
                         ).hasAuthority("ADMIN")
-
                         .anyRequest().authenticated()
                 )
-
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-
                 .authenticationProvider(authenticationProvider)
-
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

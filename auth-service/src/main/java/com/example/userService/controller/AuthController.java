@@ -5,7 +5,6 @@ import com.example.userService.dto.request.RegisterRequest;
 import com.example.userService.dto.response.AuthResponse;
 import com.example.userService.service.UserService;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class AuthController {
     private static final String REFRESH_TOKEN_COOKIE = "refresh_token";
 
     // Durées de vie des cookies (en secondes)
-    private static final int ACCESS_TOKEN_MAX_AGE  = 24 * 60 * 60;      // 24h
+    private static final int ACCESS_TOKEN_MAX_AGE  = 24 * 60 * 60;
     private static final int REFRESH_TOKEN_MAX_AGE = 7 * 24 * 60 * 60;
 
     @PostMapping("/register")
