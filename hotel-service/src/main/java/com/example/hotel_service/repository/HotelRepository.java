@@ -9,10 +9,16 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface HotelRepository
-        extends JpaRepository<Hotel, UUID> {
+public interface HotelRepository extends JpaRepository<Hotel, UUID> {
+
+    List<Hotel> findByAll();
 
     List<Hotel> findByStatus(HotelStatus status);
 
+    List<Hotel> findByCity(String city);
+
+    List<Hotel> findByStatusAndCity(HotelStatus status, String city);
+
+    List<Hotel> findByStatusAndCityAndNameContainingIgnoreCase(HotelStatus status, String city, String name);
 }
 
