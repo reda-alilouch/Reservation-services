@@ -1,0 +1,43 @@
+@startuml UseCase_Acteur_Prestataire
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Prestataire" as Presta
+
+package "Auth Service" {
+  usecase "S'inscrire" as UC1
+  usecase "Se connecter" as UC2
+  usecase "Consulter son profil" as UC3
+  usecase "Modifier son profil" as UC4
+}
+
+package "Hotel Service" {
+  usecase "Créer un service\n(hôtel/logement)" as UC5
+  usecase "Modifier son service" as UC6
+  usecase "Supprimer son service" as UC7
+  usecase "Consulter ses services" as UC8
+  usecase "Consulter les autres services" as UC9
+}
+
+package "Booking Service" {
+  usecase "Consulter les réservations\nde ses services" as UC10
+  usecase "Consulter le dashboard analytique" as UC11
+}
+
+Presta --> UC1
+Presta --> UC2
+Presta --> UC3
+Presta --> UC4
+Presta --> UC5
+Presta --> UC6
+Presta --> UC7
+Presta --> UC8
+Presta --> UC9
+Presta --> UC10
+Presta --> UC11
+
+UC6 ..> UC8 : <<include>>
+UC7 ..> UC8 : <<include>>
+UC11 ..> UC10 : <<include>>
+
+@enduml

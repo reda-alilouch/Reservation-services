@@ -1,0 +1,44 @@
+@startuml UseCase_Acteur_Client
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Client" as Client
+
+package "Auth Service" {
+  usecase "S'inscrire" as UC1
+  usecase "Se connecter" as UC2
+  usecase "Consulter son profil" as UC3
+  usecase "Modifier son profil" as UC4
+  usecase "Changer son mot de passe" as UC5
+}
+
+package "Hotel Service" {
+  usecase "Rechercher des hôtels/logements" as UC6
+  usecase "Consulter les détails d'un service" as UC7
+  usecase "Consulter les chambres disponibles" as UC8
+}
+
+package "Booking Service" {
+  usecase "Effectuer une réservation" as UC9
+  usecase "Annuler une réservation" as UC10
+  usecase "Consulter historique des réservations" as UC11
+  usecase "Laisser un avis" as UC12
+}
+
+Client --> UC1
+Client --> UC2
+Client --> UC3
+Client --> UC4
+Client --> UC5
+Client --> UC6
+Client --> UC7
+Client --> UC8
+Client --> UC9
+Client --> UC10
+Client --> UC11
+Client --> UC12
+
+UC9 ..> UC8 : <<include>>
+UC12 ..> UC11 : <<extend>>
+
+@enduml
