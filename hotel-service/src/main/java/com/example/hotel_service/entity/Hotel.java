@@ -23,17 +23,21 @@ public class Hotel {
 
     private UUID userId;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String description;
 
+    @Column(nullable = false)
     private String city;
-
+    
+    @Column(nullable = false)
     private String address;
 
     @Enumerated(EnumType.STRING)
     private HotelStatus status;
-
+    
     private LocalDateTime createdAt;
 
     @OneToMany(

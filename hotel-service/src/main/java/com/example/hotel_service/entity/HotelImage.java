@@ -17,7 +17,13 @@ public class HotelImage {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    
+    private UUID hotelId;
 
+    @Column(name = "image_description", nullable = false)
+    private String imageDescription;
+
+    @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
     @ManyToOne
