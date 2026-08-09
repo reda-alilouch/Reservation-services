@@ -1,0 +1,108 @@
+@startuml
+
+    title Auth Service & Hotel Service - Class Diagram
+
+    skinparam classAttributeIconSize 0
+
+    package "Auth Service" {
+
+        enum Role {
+            CLIENT
+            PRESTATAIRE
+            ADMIN
+        }
+
+        class User {
+            - UUID id
+            - String firstName
+            - String lastName
+            - String email
+            - String password
+            - Role role
+            - Boolean isActive
+            - LocalDateTime createdAt
+            - LocalDateTime updatedAt
+        }
+
+        User --> Role
+    }
+
+    package "Hotel Service" {
+
+        enum HotelStatus {
+            PENDING
+            APPROVED
+            REJECTED
+        }
+
+        enum RoomType {
+            SINGLE
+            DOUBLE
+            TWIN
+            TRIPLE
+            SUITE
+            FAMILY
+        }
+
+        class Hotel {
+            - UUID id
+            - UUID providerId
+            - String name
+            - String description
+            - String address
+            - String city
+            - String country
+            - HotelStatus status
+            - List<Room> rooms
+            - List<HotelImage> images
+            - LocalDateTime createdAt
+            - LocalDateTime updatedAt
+        }
+
+        class Room {
+            - UUID id
+            - Hotel hotel
+            - String roomNumber
+            - String name
+            - String description
+            - RoomType roomType
+            - Integer capacity
+            - Integer bedCount
+            - String bedType
+            - BigDecimal pricePerNight
+            - Integer totalRooms
+            - Integer availableRooms
+            - List<RoomImage> images
+            - LocalDateTime createdAt
+            - LocalDateTime updatedAt
+        }
+
+        class HotelImage {
+            - UUID id
+            - Hotel hotel
+            - String imageUrl
+            - Integer displayOrder
+            - Boolean main
+            - LocalDateTime createdAt
+        }
+
+        class RoomImage {
+            - UUID id
+            - Room room
+            - String imageUrl
+            - Integer displayOrder
+            - Boolean main
+            - LocalDateTime createdAt
+        }
+
+        Hotel "1" *-- "0..*" Room : rooms
+        Hotel "1" *-- "0..*" HotelImage : images
+        Room "1" *-- "0..*" RoomImage : images
+
+        Hotel --> HotelStatus
+        Room --> RoomType
+    }
+
+    User "1" <.. "0..*" Hotel : providerId (logical reference)
+
+@enduml
