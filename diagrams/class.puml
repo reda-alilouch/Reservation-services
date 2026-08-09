@@ -8,7 +8,7 @@
 
         enum Role {
             CLIENT
-            PROVIDER
+            PRESTATAIRE
             ADMIN
         }
 
@@ -19,7 +19,7 @@
             - String email
             - String password
             - Role role
-            - Boolean enabled
+            - Boolean isActive
             - LocalDateTime createdAt
             - LocalDateTime updatedAt
         }
@@ -53,13 +53,15 @@
             - String city
             - String country
             - HotelStatus status
+            - List<Room> rooms
+            - List<HotelImage> images
             - LocalDateTime createdAt
             - LocalDateTime updatedAt
         }
 
         class Room {
             - UUID id
-            - UUID hotelId
+            - Hotel hotel
             - String roomNumber
             - String name
             - String description
@@ -70,13 +72,14 @@
             - BigDecimal pricePerNight
             - Integer totalRooms
             - Integer availableRooms
+            - List<RoomImage> images
             - LocalDateTime createdAt
             - LocalDateTime updatedAt
         }
 
         class HotelImage {
             - UUID id
-            - UUID hotelId
+            - Hotel hotel
             - String imageUrl
             - Integer displayOrder
             - Boolean main
@@ -85,21 +88,21 @@
 
         class RoomImage {
             - UUID id
-            - UUID roomId
+            - Room room
             - String imageUrl
             - Integer displayOrder
             - Boolean main
             - LocalDateTime createdAt
         }
 
-        Hotel "1" --> "0..*" Room : contains
-        Hotel "1" --> "0..*" HotelImage : has
-        Room "1" --> "0..*" RoomImage : has
+        Hotel "1" *-- "0..*" Room : rooms
+        Hotel "1" *-- "0..*" HotelImage : images
+        Room "1" *-- "0..*" RoomImage : images
 
         Hotel --> HotelStatus
         Room --> RoomType
     }
 
-    User ..> Hotel : providerId\n(logical reference)
+    User "1" <.. "0..*" Hotel : providerId (logical reference)
 
 @enduml
