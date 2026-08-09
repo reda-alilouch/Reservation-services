@@ -3,7 +3,7 @@ package com.example.userService.controller;
 import com.example.userService.dto.request.ChangePasswordRequest;
 import com.example.userService.dto.request.UpdateProfileRequest;
 import com.example.userService.dto.response.UserDTO;
-import com.example.userService.service.UserService;
+import com.example.userService.user.application.port.in.UserUseCase;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import jakarta.servlet.http.Cookie;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserUseCase userService;
 
     // ─────────────────────────────────────────────────────────────────────
     // ENDPOINTS UTILISATEUR CONNECTÉ
@@ -92,7 +92,7 @@ public class UserController {
      * Liste tous les utilisateurs — ADMIN uniquement.
      */
     @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.findAll());
     }
@@ -102,7 +102,7 @@ public class UserController {
      * Récupérer un utilisateur par son ID — ADMIN uniquement.
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> getUserById(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.findById(id));
     }
@@ -114,7 +114,7 @@ public class UserController {
      * Exemple : PUT /users/550e8400-.../status?active=false
      */
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> updateUserStatus(
             @PathVariable UUID id,
             @RequestParam boolean active) {

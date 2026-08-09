@@ -11,14 +11,13 @@ import com.example.userService.enums.Role;
 import com.example.userService.exception.EmailAlreadyExistsException;
 import com.example.userService.exception.InvalidTokenException;
 import com.example.userService.exception.UserNotFoundException;
-import com.example.userService.repository.UserRepository;
+import com.example.userService.user.application.port.out.UserPersistencePort;
+import com.example.userService.user.application.port.in.AuthUseCase;
+import com.example.userService.user.application.port.in.UserUseCase;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +27,9 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService implements AuthUseCase, UserUseCase {
 
-    private final UserRepository        userRepository;
+    private final UserPersistencePort   userRepository;
     private final JwtService            jwtService;
     private final PasswordEncoder       passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -84,8 +83,8 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UserNotFoundException("Compte désactivé ou introuvable"));
 
         // 3. Générer les tokens
-        String accessToken  = jwtService.generateToken((UserDetails) user);
-        String refreshToken = jwtService.generateRefreshToken((UserDetails) user);
+        String accessToken  = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
 
         return buildAuthResponse(user, accessToken, refreshToken);
     }
@@ -175,16 +174,6 @@ public class UserService implements UserDetailsService {
 
         user.setActive(active);
         userRepository.save(user);
-    }
-
-    // ── UserDetailsService (Spring Security) ─────────────────────────────
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        "Utilisateur avec l'email " + email + " introuvable"
-                ));
     }
 
     private AuthResponse buildAuthResponse(User user, String accessToken, String refreshToken) {

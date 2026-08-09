@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/users",
                                 "/users/*/status"
-                        ).hasAuthority("ADMIN")
+                        ).hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

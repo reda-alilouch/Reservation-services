@@ -3,7 +3,7 @@ package com.example.userService.controller;
 import com.example.userService.dto.request.LoginRequest;
 import com.example.userService.dto.request.RegisterRequest;
 import com.example.userService.dto.response.AuthResponse;
-import com.example.userService.service.UserService;
+import com.example.userService.user.application.port.in.AuthUseCase;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserService userService;
+    private final AuthUseCase userService;
 
     private static final String ACCESS_TOKEN_COOKIE  = "access_token";
     private static final String REFRESH_TOKEN_COOKIE = "refresh_token";
