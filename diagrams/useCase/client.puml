@@ -22,7 +22,6 @@ package "Booking Service" {
   usecase "Effectuer une réservation" as UC9
   usecase "Annuler une réservation" as UC10
   usecase "Consulter historique des réservations" as UC11
-  usecase "Laisser un avis" as UC12
 }
 
 Client --> UC1

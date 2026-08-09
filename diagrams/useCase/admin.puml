@@ -6,7 +6,9 @@ actor "Administrateur" as Admin
 
 package "Auth Service" {
   usecase "Se connecter" as UC1
-  usecase "Consulter la liste des utilisateurs" as UC2
+  usecase "Se déconnecter" as UC5
+  usecase "Accéder au dashboard" as UC2
+  usecase "Consulter la liste des utilisateurs" as UC6
   usecase "Désactiver un compte\n(Client ou Prestataire)" as UC3
 }
 
@@ -15,10 +17,12 @@ package "Booking Service" {
 }
 
 Admin --> UC1
+Admin --> UC5
 Admin --> UC2
+Admin --> UC6
 Admin --> UC3
 Admin --> UC4
 
-UC3 ..> UC2 : <<include>>
+UC1 ..> UC2 : <<include>>
 
 @enduml
