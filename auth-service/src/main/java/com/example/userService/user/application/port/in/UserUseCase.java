@@ -7,10 +7,15 @@ import java.util.List;
 import java.util.UUID;
 
 public interface UserUseCase {
-    UserDTO findById(UUID id);
-    UserDTO findByEmail(String email);
-    UserDTO updateProfile(UUID id, UpdateProfileRequest request);
-    void changePassword(UUID id, ChangePasswordRequest request);
-    List<UserDTO> findAll();
-    void updateUserStatus(UUID id, boolean active);
+  UserDTO findById(UUID id);
+
+  UserDTO findByEmail(String email);
+
+  UserDTO updateProfile(UUID id, UpdateProfileRequest request);
+
+  void changePassword(UUID id, ChangePasswordRequest request);
+
+  List<UserDTO> findAll();
+
+  void updateUserStatus(UUID id, boolean active);
 }

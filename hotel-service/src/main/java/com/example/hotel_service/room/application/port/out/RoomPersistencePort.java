@@ -6,8 +6,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface RoomPersistencePort {
-    List<Room> findAll();
-    Optional<Room> findById(UUID id);
-    Room save(Room room);
-    void delete(Room room);
+  List<Room> findAll();
+
+  Optional<Room> findById(UUID id);
+
+  Room save(Room room);
+
+  void delete(Room room);
 }

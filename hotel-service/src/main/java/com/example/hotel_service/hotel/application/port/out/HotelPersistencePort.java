@@ -6,8 +6,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface HotelPersistencePort {
-    List<Hotel> findAll();
-    Optional<Hotel> findById(UUID id);
-    Hotel save(Hotel hotel);
-    void delete(Hotel hotel);
+  List<Hotel> findAll();
+
+  Optional<Hotel> findById(UUID id);
+
+  Hotel save(Hotel hotel);
+
 }

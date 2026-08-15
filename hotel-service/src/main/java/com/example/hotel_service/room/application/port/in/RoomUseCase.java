@@ -7,9 +7,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface RoomUseCase {
-    List<RoomResponse> findAll();
-    RoomResponse findById(UUID id);
-    RoomResponse create(CreateRoomRequest request);
-    RoomResponse update(UUID id, UpdateRoomRequest request);
-    void delete(UUID id);
+  List<RoomResponse> findAll();
+
+  RoomResponse findById(UUID id);
+
+  RoomResponse create(CreateRoomRequest request);
+
+  RoomResponse update(UUID id, UpdateRoomRequest request);
+
+  void delete(UUID id);
 }

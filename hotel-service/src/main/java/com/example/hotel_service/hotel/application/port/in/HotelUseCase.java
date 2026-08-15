@@ -7,9 +7,13 @@ import java.util.List;
 import java.util.UUID;
 
 public interface HotelUseCase {
-    List<HotelResponse> findAll();
-    HotelResponse findById(UUID id);
-    HotelResponse create(CreateHotelRequest request);
-    HotelResponse update(UUID id, UpdateHotelRequest request);
-    void delete(UUID id);
+  List<HotelResponse> findAll();
+
+  HotelResponse findById(UUID id);
+
+  HotelResponse create(CreateHotelRequest request);
+
+  HotelResponse update(UUID id, UpdateHotelRequest request);
+
+  void archive(UUID id);
 }
