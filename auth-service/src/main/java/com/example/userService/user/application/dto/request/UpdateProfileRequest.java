@@ -1,4 +1,4 @@
-package com.example.userService.dto.request;
+package com.example.userService.user.application.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

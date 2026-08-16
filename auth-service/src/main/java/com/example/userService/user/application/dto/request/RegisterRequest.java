@@ -1,4 +1,4 @@
-package com.example.userService.dto.request;
+package com.example.userService.user.application.dto.request;
 
 import com.example.userService.enums.Role;
 import jakarta.validation.constraints.Email;

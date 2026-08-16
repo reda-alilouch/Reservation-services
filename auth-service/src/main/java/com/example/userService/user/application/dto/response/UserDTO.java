@@ -1,4 +1,4 @@
-package com.example.userService.dto.response;
+package com.example.userService.user.application.dto.response;
 
 import com.example.userService.enums.Role;
 import java.time.LocalDateTime;

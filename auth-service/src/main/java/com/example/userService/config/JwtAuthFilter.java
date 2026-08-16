@@ -1,6 +1,5 @@
 package com.example.userService.config;
 
-import com.example.userService.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -18,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import com.example.userService.user.application.service.JwtService;
 
 /**
  * Filtre JWT — intercepte CHAQUE requête HTTP avant qu'elle atteigne le Controller.

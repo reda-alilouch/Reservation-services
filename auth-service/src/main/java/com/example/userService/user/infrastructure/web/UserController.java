@@ -1,8 +1,8 @@
-package com.example.userService.controller;
+package com.example.userService.user.infrastructure.web;
 
-import com.example.userService.dto.request.ChangePasswordRequest;
-import com.example.userService.dto.request.UpdateProfileRequest;
-import com.example.userService.dto.response.UserDTO;
+import com.example.userService.user.application.dto.request.ChangePasswordRequest;
+import com.example.userService.user.application.dto.request.UpdateProfileRequest;
+import com.example.userService.user.application.dto.response.UserDTO;
 import com.example.userService.user.application.port.in.UserUseCase;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

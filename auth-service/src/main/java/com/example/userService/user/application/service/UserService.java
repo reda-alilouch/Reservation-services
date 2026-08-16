@@ -1,16 +1,16 @@
-package com.example.userService.service;
+package com.example.userService.user.application.service;
 
-import com.example.userService.dto.request.ChangePasswordRequest;
-import com.example.userService.dto.request.LoginRequest;
-import com.example.userService.dto.request.RegisterRequest;
-import com.example.userService.dto.request.UpdateProfileRequest;
-import com.example.userService.dto.response.AuthResponse;
-import com.example.userService.dto.response.UserDTO;
 import com.example.userService.entity.User;
 import com.example.userService.enums.Role;
-import com.example.userService.exception.EmailAlreadyExistsException;
-import com.example.userService.exception.InvalidTokenException;
-import com.example.userService.exception.UserNotFoundException;
+import com.example.userService.shared.exception.EmailAlreadyExistsException;
+import com.example.userService.shared.exception.InvalidTokenException;
+import com.example.userService.shared.exception.UserNotFoundException;
+import com.example.userService.user.application.dto.request.ChangePasswordRequest;
+import com.example.userService.user.application.dto.request.LoginRequest;
+import com.example.userService.user.application.dto.request.RegisterRequest;
+import com.example.userService.user.application.dto.request.UpdateProfileRequest;
+import com.example.userService.user.application.dto.response.AuthResponse;
+import com.example.userService.user.application.dto.response.UserDTO;
 import com.example.userService.user.application.port.in.AuthUseCase;
 import com.example.userService.user.application.port.in.UserUseCase;
 import com.example.userService.user.application.port.out.UserPersistencePort;

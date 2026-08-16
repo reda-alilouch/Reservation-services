@@ -10,7 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/hotel/room")
+@RequestMapping("/api/hotels/room")
 public class RoomController {
   private final RoomUseCase service;
 

@@ -1,4 +1,4 @@
-package com.example.userService.exception;
+package com.example.userService.shared.exception;
 
 public class InvalidTokenException extends RuntimeException {
 

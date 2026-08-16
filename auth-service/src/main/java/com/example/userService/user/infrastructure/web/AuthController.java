@@ -1,8 +1,8 @@
-package com.example.userService.controller;
+package com.example.userService.user.infrastructure.web;
 
-import com.example.userService.dto.request.LoginRequest;
-import com.example.userService.dto.request.RegisterRequest;
-import com.example.userService.dto.response.AuthResponse;
+import com.example.userService.user.application.dto.request.LoginRequest;
+import com.example.userService.user.application.dto.request.RegisterRequest;
+import com.example.userService.user.application.dto.response.AuthResponse;
 import com.example.userService.user.application.port.in.AuthUseCase;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

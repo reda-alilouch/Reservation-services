@@ -1,4 +1,4 @@
-package com.example.userService.service;
+package com.example.userService.user.application.service;
 
 import com.example.userService.entity.User;
 import io.jsonwebtoken.Claims;
