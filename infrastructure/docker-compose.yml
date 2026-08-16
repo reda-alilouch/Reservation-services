@@ -13,6 +13,7 @@ services:
 
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql:ro
 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -108,6 +109,29 @@ services:
     environment:
       CONFIG_SERVER_URI: http://config-server:8888
       EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka
+      JWT_SECRET: ${JWT_SECRET}
+
+
+  hotel-service:
+    build: ../hotel-service
+    container_name: hotel-service
+    restart: unless-stopped
+
+    ports:
+      - "8083:8083"
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+
+    environment:
+      CONFIG_SERVER_URI: http://config-server:8888
+      EUREKA_DEFAULT_ZONE: http://eureka-server:8761/eureka
+      JWT_SECRET: ${JWT_SECRET}
 
 volumes:
   postgres_data:

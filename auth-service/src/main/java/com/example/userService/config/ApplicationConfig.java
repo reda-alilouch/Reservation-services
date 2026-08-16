@@ -1,9 +1,6 @@
 package com.example.userService.config;
 
-
-
-
-import com.example.userService.repository.UserRepository;
+import com.example.userService.user.application.port.out.UserPersistencePort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,39 +11,41 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepository userRepository;
+  private final UserPersistencePort userRepository;
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> (org.springframework.security.core.userdetails.UserDetails) userRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(
-                        "Utilisateur avec l'email " + username + " introuvable"
-                ));
-    }
+  @Bean
+  public UserDetailsService userDetailsService() {
+    return username ->
+        userRepository
+            .findByEmail(username)
+            .orElseThrow(
+                () ->
+                    new UsernameNotFoundException(
+                        "Utilisateur avec l'email " + username + " introuvable"));
+  }
 
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService()); // comment charger l'user
-        provider.setPasswordEncoder(passwordEncoder());       // comment vérifier le mdp
-        return provider;
-    }
+  @Bean
+  public AuthenticationProvider authenticationProvider() {
+    DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+    provider.setUserDetailsService(userDetailsService()); // comment charger l'user
+    provider.setPasswordEncoder(passwordEncoder()); // comment vérifier le mdp
+    return provider;
+  }
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
-    }
+  @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+      throws Exception {
+    return config.getAuthenticationManager();
+  }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+  }
 }

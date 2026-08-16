@@ -1,3 +1,49 @@
 package com.example.hotel_service.room.infrastructure.web;
-import com.example.hotel_service.room.application.dto.request.*; import com.example.hotel_service.room.application.dto.response.RoomResponse; import com.example.hotel_service.room.application.port.in.RoomUseCase; import jakarta.validation.Valid; import org.springframework.http.*; import org.springframework.security.access.prepost.PreAuthorize; import org.springframework.web.bind.annotation.*; import java.util.*;
-@RestController @RequestMapping("/api/room") public class RoomController { private final RoomUseCase service; public RoomController(RoomUseCase service){this.service=service;} @GetMapping public List<RoomResponse> all(){return service.findAll();} @GetMapping("/{id}") public RoomResponse one(@PathVariable UUID id){return service.findById(id);} @PostMapping @PreAuthorize("hasRole('PRESTATAIRE')") public ResponseEntity<RoomResponse> create(@Valid @RequestBody CreateRoomRequest r){return ResponseEntity.status(HttpStatus.CREATED).body(service.create(r));} @PutMapping("/{id}") @PreAuthorize("hasRole('PRESTATAIRE')") public RoomResponse update(@PathVariable UUID id,@Valid @RequestBody UpdateRoomRequest r){return service.update(id,r);} @DeleteMapping("/{id}") @PreAuthorize("hasRole('PRESTATAIRE')") @ResponseStatus(HttpStatus.NO_CONTENT) public void delete(@PathVariable UUID id){service.delete(id);} }
+
+import com.example.hotel_service.room.application.dto.request.*;
+import com.example.hotel_service.room.application.dto.response.RoomResponse;
+import com.example.hotel_service.room.application.port.in.RoomUseCase;
+import jakarta.validation.Valid;
+import java.util.*;
+import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/hotels/room")
+public class RoomController {
+  private final RoomUseCase service;
+
+  public RoomController(RoomUseCase service) {
+    this.service = service;
+  }
+
+  @GetMapping
+  public List<RoomResponse> all() {
+    return service.findAll();
+  }
+
+  @GetMapping("/{id}")
+  public RoomResponse one(@PathVariable UUID id) {
+    return service.findById(id);
+  }
+
+  @PostMapping
+  @PreAuthorize("hasRole('PRESTATAIRE')")
+  public ResponseEntity<RoomResponse> create(@Valid @RequestBody CreateRoomRequest r) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(service.create(r));
+  }
+
+  @PutMapping("/{id}")
+  @PreAuthorize("hasRole('PRESTATAIRE')")
+  public RoomResponse update(@PathVariable UUID id, @Valid @RequestBody UpdateRoomRequest r) {
+    return service.update(id, r);
+  }
+
+  @DeleteMapping("/{id}")
+  @PreAuthorize("hasRole('PRESTATAIRE')")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(@PathVariable UUID id) {
+    service.delete(id);
+  }
+}

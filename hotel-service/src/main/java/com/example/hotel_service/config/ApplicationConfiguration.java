@@ -9,13 +9,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ApplicationConfiguration {
-    @Bean
-    HotelService hotelService(HotelPersistencePort hotelPersistence) {
-        return new HotelService(hotelPersistence);
-    }
+  @Bean
+  HotelService hotelService(HotelPersistencePort hotelPersistence) {
+    return new HotelService(hotelPersistence);
+  }
 
-    @Bean
-    RoomService roomService(RoomPersistencePort roomPersistence, HotelPersistencePort hotelPersistence) {
-        return new RoomService(roomPersistence, hotelPersistence);
-    }
+  @Bean
+  RoomService roomService(
+      RoomPersistencePort roomPersistence, HotelPersistencePort hotelPersistence) {
+    return new RoomService(roomPersistence, hotelPersistence);
+  }
 }
