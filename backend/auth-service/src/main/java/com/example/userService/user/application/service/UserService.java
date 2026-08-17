@@ -22,6 +22,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +38,11 @@ public class UserService implements AuthUseCase, UserUseCase {
 
   @Transactional
   public AuthResponse register(RegisterRequest request) {
+
+    if (!Objects.equals(request.getPassword(), request.getConfirmPassword())) {
+      throw new ResponseStatusException(
+          HttpStatus.BAD_REQUEST, "Les mots de passe ne correspondent pas");
+    }
 
     // 1. Email déjà utilisé ?
     if (userRepository.existsByEmail(request.getEmail())) {
