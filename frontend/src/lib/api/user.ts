@@ -1,13 +1,23 @@
 import { api } from "./api";
-import type { AuthResponse, LoginInput, RegisterInput, User } from "@/types/user";
+import type {
+  AuthResponse,
+  LoginInput,
+  RegisterInput,
+  User,
+} from "@/types/user";
 
 export const authApi = {
-  
   login: (input: LoginInput) =>
     api<AuthResponse>("/auth/login", { method: "POST", body: input }),
 
   register: (input: RegisterInput) =>
     api<AuthResponse>("/auth/register", { method: "POST", body: input }),
+
+  loginWithGoogle: (token: string) =>
+    api<AuthResponse>("/auth/google", {
+      method: "POST",
+      body: { token },
+    }),
 
   logout: () => api<void>("/auth/logout", { method: "POST" }),
 
@@ -15,7 +25,6 @@ export const authApi = {
 };
 
 export const userApi = {
-
   getMe: () => api<User>("/users/me"),
 
   getAll: () => api<User[]>("/users"),

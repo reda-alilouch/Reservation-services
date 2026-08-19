@@ -9,5 +9,7 @@ public interface AuthUseCase {
 
   AuthResponse login(LoginRequest request);
 
+  AuthResponse loginWithGoogle(String code);
+
   AuthResponse refreshToken(String refreshToken);
 }

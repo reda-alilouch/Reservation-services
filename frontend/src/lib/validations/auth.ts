@@ -11,6 +11,9 @@ export const registerSchema = loginSchema.extend({
   password: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères"),
   confirmPassword: z.string().min(1, "Veuillez confirmer votre mot de passe"),
   role: z.enum(["CLIENT", "PRESTATAIRE", "ADMIN"]).optional(),
+  terms: z.boolean().refine((accepted) => accepted, {
+    message: "Vous devez accepter les conditions d'utilisation",
+  }),
 }).refine(({ password, confirmPassword }) => password === confirmPassword, {
   message: "Les mots de passe ne correspondent pas",
   path: ["confirmPassword"],

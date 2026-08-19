@@ -18,6 +18,7 @@ export interface LoginInput {
 export interface RegisterInput extends LoginInput {
   firstName: string;
   lastName: string;
+  confirmPassword: string;
   role?: UserRole;
 }
 

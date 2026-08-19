@@ -30,6 +30,7 @@ public class SecurityConfig {
                 auth.requestMatchers(
                         "/auth/register",
                         "/auth/login",
+                        "/auth/google",
                         "/auth/refresh",
                         "/auth/logout",
                         "/swagger-ui/**",

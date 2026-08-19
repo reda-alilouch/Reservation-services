@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import AuthGoogle from "@/features/auth/components/AuthGoogle";
 import Login from "@/features/auth/components/Login";
 import Register from "@/features/auth/components/Register";
 
@@ -31,6 +32,18 @@ export default function AuthPage() {
           </button>
         </div>
         {mode === "login" ? <Login /> : <Register />}
+        <div className="px-6 pb-12 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-md">
+            <div className="relative mb-6 flex items-center">
+              <div className="flex-1 border-t border-outline-variant" />
+              <span className="px-4 text-xs font-medium uppercase tracking-wider text-on-surface-variant">
+                ou
+              </span>
+              <div className="flex-1 border-t border-outline-variant" />
+            </div>
+            <AuthGoogle />
+          </div>
+        </div>
       </div>
     </main>
   );

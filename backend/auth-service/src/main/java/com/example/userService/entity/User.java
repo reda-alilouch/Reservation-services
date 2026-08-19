@@ -42,6 +42,9 @@ public class User implements UserDetails {
   @Column(nullable = false, length = 20)
   private Role role;
 
+  @Column(name = "profile_picture_url", nullable = false)
+  private String profilePictureUrl;
+
   @Column(name = "is_active", nullable = false)
   private Boolean isActive = true;
 
@@ -49,7 +52,7 @@ public class User implements UserDetails {
   private LocalDateTime createdAt;
 
   @Column(name = "updated_at", nullable = false)
-  private LocalDateTime updatedAt;
+  private LocalDateTime updatedAt; 
 
   @PrePersist
   protected void onCreate() {
